@@ -1,8 +1,8 @@
 import express from "express"
 import 'dotenv/config'
-import dbConnect from "./database/dbConnect.js";
-import userRouter from "./routers/userRouter.js"
-import { errorHandler } from "./middleware/errorHandler.js";
+import dbConnect from "./src/database/dbConnect.js";
+import userRouter from "./src/routers/userRouter.js"
+import { errorHandler } from "./src/middleware/errorHandler.js";
 
 const app = express()
 const port = process.env.PORT||3001
