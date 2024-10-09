@@ -4,6 +4,6 @@ const router = Router();
 
 const userController=new UserController();
 
-router.get('/',userController.getUser);
+router.post('/register',userController.registerUser); //route for registering new user.
 
 export default router;
