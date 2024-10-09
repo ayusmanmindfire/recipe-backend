@@ -13,7 +13,17 @@ class UserController{
                 return errorResponse(res, isValid.error.message, 400)
             }
             const userResponse = await UserModel.create({username,email,password});
-            successResponse(res,userResponse,"New user created",200)
+            successResponse(res,userResponse,"New user created",201)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    //method for fetching all users in the database
+    fetchAllUser=async(req,res,next)=>{
+        try {
+            const userResponse = await UserModel.find();
+            successResponse(res,userResponse,"All users fetched",200)
         } catch (error) {
             next(error)
         }
