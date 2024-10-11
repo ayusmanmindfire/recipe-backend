@@ -26,7 +26,7 @@ const recipeSchema = new mongoose.Schema({
 {
     timestamps: true
 });
-
+recipeSchema.index({ title: 'text', ingredients: 'text'})
 const RecipeModel = mongoose.model('Recipe', recipeSchema);
 
 export default RecipeModel;

@@ -112,6 +112,28 @@ class RecipeController {
             next(error);
         }
     }
+
+    //Method for search queries
+    searchRecipes=async(req,res,next)=>{
+        try {
+            const searchQuery=req.query.q; //get search query
+            if (!searchQuery) {
+                return errorResponse(res, "Search query is required", 400);
+            }
+            const recipes = await RecipeModel.find(
+                { $text: { $search: searchQuery } }, // Text search on indexed fields
+                { score: { $meta: "textScore" } } 
+            )
+            .sort({ score: { $meta: "textScore" } }) // Sort by text score
+            if (!recipes.length) {
+                return errorResponse(res, "No recipes found for the given query", 404);
+            }
+
+            successResponse(res, recipes, "Recipes fetched successfully", 200);
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 export default RecipeController
