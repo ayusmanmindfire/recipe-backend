@@ -14,8 +14,8 @@ const recipeSchema = new mongoose.Schema({
     required: true
   },
   image: {
-    data: Buffer,   
-    contentType: String  // Content type of the image (e.g., 'image/png')
+    type: String,
+    required: true
   },
   createdBy: {
     type: String, // Reference to the user's email who created the recipe
