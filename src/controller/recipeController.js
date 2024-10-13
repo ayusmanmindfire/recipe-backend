@@ -4,6 +4,7 @@ import { newRecipeSchema } from "../validation/recipeValidation.js";
 import path, { dirname } from "path"
 import { fileURLToPath } from 'url';
 import fs from 'fs'
+import { validMimeTypes } from "../utils/constants.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,17 +15,18 @@ class RecipeController {
         try {
             const email = req.user.email;
             const { title, ingredients, steps } = req.body;
-            if (!req.file) {
+            //checks whether valid image file uploaded or not
+            if (!req.file||!validMimeTypes.includes(req.file.mimetype)) {
                 return errorResponse(res, "Image file is missing", 400);
             }
-
             // Create image object
-            const image = {
-                data: fs.readFileSync(path.join(__dirname, '..', 'uploads', req.file.filename)), // Path to saved image
-                contentType: req.file.mimetype // Use the actual mime type (png, jpeg, etc.)
-            };
-            // const imagePath = path.join('uploads', req.file.filename); //for storing the path in db only
-            const isValid = newRecipeSchema.validate({ title, ingredients, steps, image })
+            // const image = {
+            //     data: fs.readFileSync(path.join(__dirname, '..', 'uploads', req.file.filename)), // Path to saved image
+            //     contentType: req.file.mimetype // Use the actual mime type (png, jpeg, etc.)
+            // };
+            const imagePath =req.file.filename; //for storing the path in db only
+            // console.log(imagePath)
+            const isValid = newRecipeSchema.validate({ title, ingredients, steps })
             if (isValid.error) {
                 return errorResponse(res, isValid.error.message, 400)
             }
@@ -33,7 +35,7 @@ class RecipeController {
                 title: title,
                 ingredients: ingredients,
                 steps: steps,
-                image: image,
+                image: imagePath,
                 createdBy: email
             });
             successResponse(res, recipeResponse, "New recipe added", 201)
@@ -76,15 +78,21 @@ class RecipeController {
             if(!response){
                 return errorResponse(res, "Recipe not found", 404);
             }
-            let image=response.image
-            // Check if an image file is uploaded
-            if (req.file) {
-                image = {
-                    data: fs.readFileSync(path.join(__dirname, '..', 'uploads', req.file.filename)), // Path to saved image
-                    contentType: req.file.mimetype // Use the actual mime type (png, jpeg, etc.)
-                };
+            // let image=response.image
+            // // Check if an image file is uploaded
+            // if (req.file) {
+            //     image = {
+            //         data: fs.readFileSync(path.join(__dirname, '..', 'uploads', req.file.filename)), // Path to saved image
+            //         contentType: req.file.mimetype // Use the actual mime type (png, jpeg, etc.)
+            //     };
+            // }
+            // console.log(req.file.mimetype)
+            //checks valid image file uploaded or not
+            if(!req.file||!validMimeTypes.includes(req.file.mimetype)){
+                return errorResponse(res,"Provide a valid image",400)
             }
-            const isValid = newRecipeSchema.validate({ title, ingredients, steps, image })
+            const image=req.file.filename // stored image name only in the database
+            const isValid = newRecipeSchema.validate({ title, ingredients, steps })
             if (isValid.error) {
                 return errorResponse(res, isValid.error.message, 400)
             }

@@ -13,10 +13,10 @@ export const newRecipeSchema = Joi.object({
 
   steps: Joi.string().required(),
 
-  image: Joi.object({
-    data: Joi.binary().required(),
-    contentType: Joi.string()
-      .valid('image/jpeg', 'image/png', 'image/jpg')
-      .required()
-  }).required(),
+  // image: Joi.object({
+  //   data: Joi.binary().required(),
+  //   contentType: Joi.string()
+  //     .valid('image/jpeg', 'image/png', 'image/jpg')
+  //     .required()
+  // }).required(),
 });
