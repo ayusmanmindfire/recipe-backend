@@ -30,6 +30,16 @@ class UserController{
         }
     }
 
+    //get user details from token
+    fetchUserDetailsFromToken=async(req,res,next)=>{
+        try {
+            const userResponse=req.user;
+            successResponse(res,userResponse,"User details from token fetched",200)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     //method for user authentication
     loginUser=async(req,res,next)=>{
         try {
