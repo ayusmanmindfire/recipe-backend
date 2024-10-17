@@ -38,7 +38,7 @@ class RatingController{
         try {
             const recipeID=req.params.recipeID;
             const ratingResponse = await RatingModel.find({recipeID:recipeID});
-            successResponse(res, ratingResponse, "Ratings for specific recipe fetched", 201)
+            successResponse(res, ratingResponse, "Ratings for specific recipe fetched", 200)
         } catch (error) {
             next(error)
         }
