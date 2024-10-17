@@ -144,10 +144,7 @@ class RecipeController {
                 { score: { $meta: "textScore" } } 
             )
             .sort({ score: { $meta: "textScore" } }) // Sort by text score
-            if (!recipes.length) {
-                return errorResponse(res, "No recipes found for the given query", 404);
-            }
-
+            
             successResponse(res, recipes, "Recipes fetched successfully", 200);
         } catch (error) {
             next(error)
