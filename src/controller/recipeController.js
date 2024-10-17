@@ -135,7 +135,9 @@ class RecipeController {
         try {
             const searchQuery=req.query.q; //get search query
             if (!searchQuery) {
-                return errorResponse(res, "Search query is required", 400);
+                const response = await RecipeModel.find();
+                return successResponse(res, response, "All recipes fetched", 200)
+                // return errorResponse(res, "Search query is required", 400);
             }
             const recipes = await RecipeModel.find(
                 { $text: { $search: searchQuery } }, // Text search on indexed fields
