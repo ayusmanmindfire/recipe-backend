@@ -73,10 +73,14 @@ class RecipeController {
     updateRecipe = async (req, res, next) => {
         try {
             const _id = req.params.id;
+            const {email}=req.user
             const { title, ingredients, steps } = req.body;
             const response = await RecipeModel.findOne({ _id });
             if(!response){
                 return errorResponse(res, "Recipe not found", 404);
+            }
+            if(response.createdBy!=email){
+                return errorResponse(res, "Not authorized user to update the recipe",409);
             }
             // let image=response.image
             // // Check if an image file is uploaded
@@ -111,6 +115,11 @@ class RecipeController {
     deleteRecipe = async (req, res, next) => {
         try {
             const _id = req.params.id;
+            const {email}=req.user
+            const response = await RecipeModel.findOne({ _id });
+            if(response.createdBy!=email){
+                return errorResponse(res, "Not authorized user to delete the recipe",409);
+            }
             const recipeResponse = await RecipeModel.findByIdAndDelete(_id);
             if (!recipeResponse) {
                 return errorResponse(res, "Recipe not found", 404);
