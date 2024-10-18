@@ -17,7 +17,7 @@ Follow the steps below to set up the project locally.
 git clone https://github.com/ayusmanmindfire/recipe-backend.git
 ```
 
-### 2. Install dependecies
+### 2. Install dependencies
 
 ```cmd
 cd recipe-backend
