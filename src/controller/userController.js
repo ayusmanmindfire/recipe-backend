@@ -1,11 +1,19 @@
+//Third party imports
+import jwt from "jsonwebtoken"
+
+//Static imports
 import UserModel from "../database/models/UserModel.js";
 import { errorResponse, successResponse } from "../utils/response.js";
 import { registerUserSchema } from "../validation/userValidation.js";
-import jwt from "jsonwebtoken"
 
+//Fetching JWT secret key and expiry time from environment
 const secretKey=process.env.JWT_SECRET;
+const jwtExpiry=process.env.JWT_EXPIRY;
+
 class UserController{
-    //method for register a new user 
+
+    // Method for registering a new user.
+    // Validates input data and creates a new user in the database.
     registerUser=async(req,res,next)=>{
         try {
             const {username,email,password}=req.body;
@@ -20,7 +28,7 @@ class UserController{
         }
     }
 
-    //method for fetching all users in the database
+    //method for fetching all users from the database
     fetchAllUser=async(req,res,next)=>{
         try {
             const userResponse = await UserModel.find();
@@ -30,7 +38,8 @@ class UserController{
         }
     }
 
-    //get user details from token
+    // Method for fetching user details from token.
+    // Retrieves user data stored in the JWT token.
     fetchUserDetailsFromToken=async(req,res,next)=>{
         try {
             const userResponse=req.user;
@@ -40,7 +49,8 @@ class UserController{
         }
     }
 
-    //method for user authentication
+    // Method for authenticating user login.
+    // Verifies credentials and generates a JWT token on successful login.
     loginUser=async(req,res,next)=>{
         try {
             const { email, password } = req.body;
@@ -56,7 +66,7 @@ class UserController{
                         username: existingUser.username
                     },
                     secretKey,
-                    {expiresIn: '24h'}
+                    {expiresIn: jwtExpiry}
     
                 )
                 return successResponse(res,token,"Token generated",200)

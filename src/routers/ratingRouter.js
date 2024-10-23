@@ -1,4 +1,7 @@
+//Native imports
 import {Router} from "express";
+
+//Static imports
 import verifyToken from "../middleware/authMiddleware.js";
 import RatingController from "../controller/ratingController.js";
 
