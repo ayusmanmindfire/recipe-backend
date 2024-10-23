@@ -1,36 +1,25 @@
+//Static imports
 import RecipeModel from "../database/models/recipeModel.js";
 import { errorResponse, successResponse } from "../utils/response.js";
 import { newRecipeSchema } from "../validation/recipeValidation.js";
-import path, { dirname } from "path"
-import { fileURLToPath } from 'url';
-import fs from 'fs'
 import { validMimeTypes } from "../utils/constants.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 class RecipeController {
-    //method for adding new recipe
+
+    // Method for adding a new recipe.
+    // Checks for image file, validates the input and stores the recipe in the database.
     addNewRecipe = async (req, res, next) => {
         try {
             const email = req.user.email;
             const { title, ingredients, steps } = req.body;
-            //checks whether valid image file uploaded or not
             if (!req.file||!validMimeTypes.includes(req.file.mimetype)) {
                 return errorResponse(res, "Image file is missing", 400);
             }
-            // Create image object
-            // const image = {
-            //     data: fs.readFileSync(path.join(__dirname, '..', 'uploads', req.file.filename)), // Path to saved image
-            //     contentType: req.file.mimetype // Use the actual mime type (png, jpeg, etc.)
-            // };
-            const imagePath =req.file.filename; //for storing the path in db only
-            // console.log(imagePath)
+            const imagePath =req.file.filename; 
             const isValid = newRecipeSchema.validate({ title, ingredients, steps })
             if (isValid.error) {
                 return errorResponse(res, isValid.error.message, 400)
             }
-
             const recipeResponse = await RecipeModel.create({
                 title: title,
                 ingredients: ingredients,
@@ -44,7 +33,7 @@ class RecipeController {
         }
     }
 
-    //method for fetching all recipe
+    //method for fetching all recipe from database
     getAllRecipe = async (req, res, next) => {
         try {
             const response = await RecipeModel.find();
@@ -54,11 +43,10 @@ class RecipeController {
         }
     }
 
-    //method for fetching details of a single recipe
+    //method for fetching details of a single recipe using ID (available as URL params) from database
     getDetailsOfARecipe = async (req, res, next) => {
         try {
             const _id = req.params.id
-            // console.log(_id)
             const response = await RecipeModel.findOne({ _id });
             if (!response) {
                 return errorResponse(res, "Recipe not found", 404)
@@ -69,7 +57,8 @@ class RecipeController {
         }
     }
 
-    // Method for updating a recipe
+    // Method for updating an existing recipe.
+    // Validates the user who created that recipe, the inputs, and updates the recipe in the database.
     updateRecipe = async (req, res, next) => {
         try {
             const _id = req.params.id;
@@ -82,16 +71,6 @@ class RecipeController {
             if(response.createdBy!=email){
                 return errorResponse(res, "Not authorized user to update the recipe",409);
             }
-            // let image=response.image
-            // // Check if an image file is uploaded
-            // if (req.file) {
-            //     image = {
-            //         data: fs.readFileSync(path.join(__dirname, '..', 'uploads', req.file.filename)), // Path to saved image
-            //         contentType: req.file.mimetype // Use the actual mime type (png, jpeg, etc.)
-            //     };
-            // }
-            // console.log(req.file.mimetype)
-            //checks valid image file uploaded or not
             if(!req.file||!validMimeTypes.includes(req.file.mimetype)){
                 return errorResponse(res,"Provide a valid image",400)
             }
@@ -111,7 +90,8 @@ class RecipeController {
         }
     }
 
-    // Method for deleting a recipe
+    // Method for deleting a recipe.
+    // Validates the user who created that particular recipe and deletes the recipe from the database.
     deleteRecipe = async (req, res, next) => {
         try {
             const _id = req.params.id;
@@ -130,14 +110,14 @@ class RecipeController {
         }
     }
 
-    //Method for search queries
+    // Method for searching recipes by a query.
+    // Performs a text search on the indexed fields of the recipes.
     searchRecipes=async(req,res,next)=>{
         try {
             const searchQuery=req.query.q; //get search query
             if (!searchQuery) {
                 const response = await RecipeModel.find();
                 return successResponse(res, response, "All recipes fetched", 200)
-                // return errorResponse(res, "Search query is required", 400);
             }
             const recipes = await RecipeModel.find(
                 { $text: { $search: searchQuery } }, // Text search on indexed fields

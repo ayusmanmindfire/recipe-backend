@@ -1,5 +1,7 @@
+//Third party import
 import Joi from 'joi';
 
+//Validation schema for new recipe
 export const newRecipeSchema = Joi.object({
   title: Joi.string()
     .min(3)
@@ -12,11 +14,4 @@ export const newRecipeSchema = Joi.object({
     .required(),
 
   steps: Joi.string().required(),
-
-  // image: Joi.object({
-  //   data: Joi.binary().required(),
-  //   contentType: Joi.string()
-  //     .valid('image/jpeg', 'image/png', 'image/jpg')
-  //     .required()
-  // }).required(),
 });

@@ -1,5 +1,9 @@
+//Third party imports
 import mongoose from 'mongoose';
 
+// Schema for storing recipe details in the database.
+// Each recipe has a title, list of ingredients, steps, image-path, 
+// and is linked to the user who created it.
 const recipeSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -26,7 +30,10 @@ const recipeSchema = new mongoose.Schema({
 {
     timestamps: true
 });
+
+// Creates a text index on 'title' and 'ingredients' for text-based search.
 recipeSchema.index({ title: 'text', ingredients: 'text'})
+
 const RecipeModel = mongoose.model('Recipe', recipeSchema);
 
 export default RecipeModel;
