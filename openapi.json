@@ -1,0 +1,504 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Recipe App API",
+      "version": "1.0.0",
+      "description": "API documentation for a Recipe application"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:5000",
+        "description": "Local server"
+      }
+    ],
+    "paths": {
+      "/recipes": {
+        "post": {
+          "tags": ["Recipes"],
+          "summary": "Add a new recipe",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Recipe created successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RecipeResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "tags": ["Recipes"],
+          "summary": "Get all recipes",
+          "responses": {
+            "200": {
+              "description": "List of recipes",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": {
+                        "type": "boolean"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/RecipeResponse"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/recipes/{id}": {
+        "get": {
+          "tags": ["Recipes"],
+          "summary": "Get details of a specific recipe",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID of the recipe",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Details of the recipe",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RecipeResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "tags": ["Recipes"],
+          "summary": "Update a specific recipe",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID of the recipe to update",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Recipe updated successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RecipeResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "tags": ["Recipes"],
+          "summary": "Delete a specific recipe",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID of the recipe to delete",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Recipe deleted successfully"
+            }
+          }
+        }
+      },
+      "/ratings": {
+        "post": {
+          "tags": ["Ratings"],
+          "summary": "Add a rating for a recipe",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RatingRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Rating created successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RatingResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "tags": ["Ratings"],
+          "summary": "Fetch ratings for a recipe",
+          "parameters": [
+            {
+              "name": "recipeID",
+              "in": "query",
+              "required": true,
+              "description": "ID of the recipe to fetch ratings for",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "List of ratings for the recipe",
+              "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/components/schemas/RatingResponse"
+                      }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/users/register": {
+        "post": {
+          "tags": ["Users"],
+          "summary": "Register a new user",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "User registered successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/users/login": {
+        "post": {
+          "tags": ["Users"],
+          "summary": "Login a user",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["email", "password"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "User logged in successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": {
+                        "type": "boolean"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "token": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "UserRequest": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "example": "john_doe"
+            },
+            "email": {
+              "type": "string",
+              "example": "john@example.com"
+            },
+            "password": {
+              "type": "string",
+              "example": "password123"
+            }
+          },
+          "required": ["username", "email", "password"]
+        },
+        "UserResponse": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean"
+            },
+            "message": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "6710faaf1729d4a1ba3ac57c"
+                },
+                "username": {
+                  "type": "string",
+                  "example": "john_doe"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "john@example.com"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2024-10-17T11:53:19.359Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2024-10-17T11:53:19.359Z"
+                }
+              }
+            }
+          }
+        },
+        "RecipeRequest": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "example": "Spaghetti Bolognese"
+            },
+            "ingredients": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": ["spaghetti", "tomato", "ground beef", "onion", "garlic"]
+            },
+            "steps": {
+              "type": "string",
+              "example": "Cook spaghetti, prepare sauce, mix together."
+            },
+            "image": {
+              "type": "string",
+              "example": "image-1729165999274.jpg"
+            }
+          },
+          "required": ["title", "ingredients", "steps"]
+        },
+        "RecipeResponse": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean"
+            },
+            "message": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "6710faaf1729d4a1ba3ac57c"
+                },
+                "title": {
+                  "type": "string",
+                  "example": "Chicken Curry"
+                },
+                "ingredients": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "1 inch cinnamon stick",
+                    "3 cloves",
+                    "3 cardamom pods",
+                    "2 tsp coriander seeds",
+                    "½ tsp fennel seeds",
+                    "1 tsp cumin seeds",
+                    "10 curry leaves (optional)",
+                    "6-10 red chilies (according to your spice level)"
+                  ]
+                },
+                "steps": {
+                  "type": "string",
+                  "example": "In a pan, add all the ingredients for the spice powder..."
+                },
+                "image": {
+                  "type": "string",
+                  "example": "image-1729165999274.jpg"
+                },
+                "createdBy": {
+                  "type": "string",
+                  "example": "ayusman1@gmail.com"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2024-10-17T11:53:19.359Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2024-10-17T11:53:19.359Z"
+                }
+              }
+            }
+          }
+        },
+        "RatingRequest": {
+          "type": "object",
+          "properties": {
+            "recipeID": {
+              "type": "string",
+              "example": "6710faaf1729d4a1ba3ac57c"
+            },
+            "rating": {
+              "type": "integer",
+              "example": 5
+            },
+            "feedback": {
+              "type": "string",
+              "example": "This recipe is fantastic!"
+            }
+          },
+          "required": ["recipeID", "rating"]
+        },
+        "RatingResponse": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean"
+            },
+            "message": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "5f1c5f2f2f2e2c0010abc123"
+                },
+                "recipeID": {
+                  "type": "string",
+                  "example": "6710faaf1729d4a1ba3ac57c"
+                },
+                "rating": {
+                  "type": "integer",
+                  "example": 5
+                },
+                "feedback": {
+                  "type": "string",
+                  "example": "This recipe is fantastic!"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2024-10-17T11:53:19.359Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2024-10-17T11:53:19.359Z"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
