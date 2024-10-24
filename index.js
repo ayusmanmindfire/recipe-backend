@@ -15,12 +15,19 @@ import recipeRouter from "./src/routers/recipeRouter.js";
 import ratingRouter from "./src/routers/ratingRouter.js"
 import { errorHandler } from "./src/middleware/errorHandler.js";
 import { limiter } from "./src/middleware/rateLimiterConfig.js";
+import { cspConfigMiddleware } from './src/middleware/cspConfig.js';
 
 const app = express()
 const port = process.env.PORT||3001
 app.use(express.json());
+
+//Configure csp header
+app.use(cspConfigMiddleware)
+
+//Api hit rate limiter
 app.use(limiter);
 
+//Integrate CORS policy
 app.use(cors({
   origin:"*"
 }));
