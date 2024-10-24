@@ -34,6 +34,12 @@ const recipeSchema = new mongoose.Schema({
 // Creates a text index on 'title' and 'ingredients' for text-based search.
 recipeSchema.index({ title: 'text', ingredients: 'text'})
 
+// Indexing `createdBy` to optimize user-based queries (i.e., fetch recipes by a specific user)
+recipeSchema.index({ createdBy: 1 });
+
+// Index on `createdAt` and `updatedAt` to optimize sorting/filtering by date
+recipeSchema.index({ createdAt: 1, updatedAt: 1 });
+
 const RecipeModel = mongoose.model('Recipe', recipeSchema);
 
 export default RecipeModel;
