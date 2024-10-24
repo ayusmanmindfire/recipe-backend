@@ -27,6 +27,9 @@ const ratingSchema= new mongoose.Schema({
     timestamps: true
 })
 
+// Add an index on `recipeID` for faster lookups when querying ratings by recipe.
+ratingSchema.index({ recipeID: 1 });
+
 const RatingModel=new mongoose.model("Rating", ratingSchema);
 
 export default RatingModel;

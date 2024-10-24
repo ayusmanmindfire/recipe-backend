@@ -22,6 +22,9 @@ const userSchema= new mongoose.Schema({
     timestamps: true
 })
 
+// A compound index on `email` and `password` required for login
+userSchema.index({ email: 1, password: 1 });
+
 const UserModel=new mongoose.model("User", userSchema);
 
 export default UserModel;
