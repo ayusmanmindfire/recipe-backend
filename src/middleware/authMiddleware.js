@@ -1,9 +1,13 @@
+//Third party imports
 import jwt from "jsonwebtoken"
+
+//Static imports
 import { errorResponse } from "../utils/response.js";
 
-
+//Fetching secret key from the environment variables
 const secretKey = process.env.JWT_SECRET;
 
+//Middleware function to verify the JWT token fetched from the authorization header
 function verifyToken(req, res, next) {
     const token = req.header('Authorization');
     if (!token)
@@ -13,7 +17,6 @@ function verifyToken(req, res, next) {
 
     try {
         const decoded = jwt.verify(realToken, secretKey);
-        // console.log(decoded)
         req.user = decoded;
         next();
     } catch (error) {

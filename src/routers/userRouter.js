@@ -1,8 +1,11 @@
+//Native imports
 import { Router } from "express";
+
+//Static imports
 import UserController from "../controller/userController.js";
 import verifyToken from "../middleware/authMiddleware.js";
-const router = Router();
 
+const router = Router();
 const userController=new UserController();
 
 router.post('/register',userController.registerUser); //route for registering new user.

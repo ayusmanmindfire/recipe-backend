@@ -1,11 +1,12 @@
+//Static imports
 import RatingModel from "../database/models/ratingModel.js";
-import RecipeModel from "../database/models/recipeModel.js";
 import { errorResponse, successResponse } from "../utils/response.js";
 import { addRatingSchema } from "../validation/ratingValidation.js";
 
-
 class RatingController{
-    //Method for adding rating to a particular recipe
+
+    // Method to allow a user to add a rating and feedback to a specific recipe.
+    // Validates input using the schema, checks for duplicate ratings, and stores the rating in the database.
     addRating= async(req,res,next)=>{
         try {
             const recipeID=req.params.recipeID;
@@ -16,7 +17,6 @@ class RatingController{
                 return errorResponse(res,isValid.error.message,400)
             }
             const checkDuplicateRating= await RatingModel.findOne({recipeID:recipeID,createdBy:email});
-            // console.log(checkDuplicateRating)
             if(checkDuplicateRating){
                 return errorResponse(res,"User already gave ratings for this recipe",400)
             }
@@ -33,7 +33,8 @@ class RatingController{
         }
     }
 
-    //Method for fetching ratings for specific recipe
+    // Method to fetch all ratings for a specific recipe.
+    // Retrieves ratings from the database and returns them in the response.
     fetchRatingsByRecipeID = async(req,res,next)=>{
         try {
             const recipeID=req.params.recipeID;
