@@ -51,9 +51,9 @@ MONGO_URL=mongodb://localhost:27017/recipe-db
 JWT_SECRET=your_jwt_secret_key
 ```
 
-4. Start the development server:
+4. Start the server:
 ```bash
-npm run dev
+npm start
 ```
 
 ## API Endpoints
