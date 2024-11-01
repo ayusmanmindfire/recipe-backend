@@ -33,15 +33,33 @@ class RecipeController {
         }
     }
 
-    //method for fetching all recipe from database
+    //method for fetching all recipe from database with pagination based on page and limit
     getAllRecipe = async (req, res, next) => {
         try {
-            const response = await RecipeModel.find();
-            successResponse(res, response, "All recipes fetched", 200)
+            // Set default values for page and limit if not provided
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 8;
+            const skip = (page - 1) * limit;
+    
+            // Fetch recipes with pagination
+            const response = await RecipeModel.find().skip(skip).limit(limit);
+    
+            const totalRecipes = await RecipeModel.countDocuments();
+    
+            // Construct pagination metadata
+            const pagination = {
+                totalRecipes,
+                currentPage: page,  
+                totalPages: Math.ceil(totalRecipes / limit),
+                limit
+            };
+    
+            successResponse(res, { recipes: response, pagination }, "All recipes fetched", 200);
         } catch (error) {
-            next(error)
+            next(error);
         }
-    }
+    };
+    
 
     //method for fetching details of a single recipe using ID (available as URL params) from database
     getDetailsOfARecipe = async (req, res, next) => {
