@@ -92,15 +92,101 @@ describe('RecipeController', () => {
     });
 
     describe('getAllRecipe', () => {
-        it('should fetch all recipes', async () => {
+        it('should fetch all recipes with pagination', async () => {
+            // Set up query parameters
+            req.query = {
+                page: '1',
+                limit: '2'
+            };
+            
+            // Mock data
             const mockRecipes = [{ title: 'Recipe 1' }, { title: 'Recipe 2' }];
-            RecipeModel.find.mockResolvedValue(mockRecipes);
-
+            const mockTotalRecipes = 2;
+    
+            // Set up mock chain for find().skip().limit()
+            const mockChain = {
+                skip: jest.fn().mockReturnThis(),
+                limit: jest.fn().mockResolvedValue(mockRecipes)
+            };
+            RecipeModel.find = jest.fn().mockReturnValue(mockChain);
+            RecipeModel.countDocuments = jest.fn().mockResolvedValue(mockTotalRecipes);
+    
+            // Expected pagination object
+            const expectedPagination = {
+                totalRecipes: mockTotalRecipes,
+                currentPage: 1,
+                totalPages: 1,
+                limit: 2
+            };
+    
+            // Call the controller method
             await recipeController.getAllRecipe(req, res, next);
-
-            expect(successResponse).toHaveBeenCalledWith(res,expect.anything(),'All recipes fetched',200);
+    
+            // Verify the response
+            expect(successResponse).toHaveBeenCalledWith(
+                res,
+                {
+                    recipes: mockRecipes,
+                    pagination: expectedPagination
+                },
+                'All recipes fetched',
+                200
+            );
+        });
+    
+        it('should use default pagination values when not provided', async () => {
+            // No query parameters (should use defaults)
+            req.query = {};
+            
+            const mockRecipes = [{ title: 'Recipe 1' }, { title: 'Recipe 2' }];
+            const mockTotalRecipes = 2;
+    
+            // Set up mock chain for find().skip().limit()
+            const mockChain = {
+                skip: jest.fn().mockReturnThis(),
+                limit: jest.fn().mockResolvedValue(mockRecipes)
+            };
+            RecipeModel.find = jest.fn().mockReturnValue(mockChain);
+            RecipeModel.countDocuments = jest.fn().mockResolvedValue(mockTotalRecipes);
+    
+            // Expected pagination object with default values
+            const expectedPagination = {
+                totalRecipes: mockTotalRecipes,
+                currentPage: 1,
+                totalPages: 1,
+                limit: 8
+            };
+    
+            await recipeController.getAllRecipe(req, res, next);
+    
+            expect(successResponse).toHaveBeenCalledWith(
+                res,
+                {
+                    recipes: mockRecipes,
+                    pagination: expectedPagination
+                },
+                'All recipes fetched',
+                200
+            );
+        });
+    
+        it('should handle errors properly', async () => {
+            const error = new Error('Database error');
+            
+            // Set up mock chain that throws an error
+            const mockChain = {
+                skip: jest.fn().mockReturnThis(),
+                limit: jest.fn().mockRejectedValue(error)
+            };
+            RecipeModel.find = jest.fn().mockReturnValue(mockChain);
+    
+            await recipeController.getAllRecipe(req, res, next);
+    
+            expect(next).toHaveBeenCalledWith(error);
+            expect(successResponse).not.toHaveBeenCalled();
         });
     });
+    
 
     describe('getDetailsOfARecipe', () => {
         it('should fetch recipe details by ID', async () => {
